@@ -36,42 +36,44 @@ public:
     
     void display(uint8_t DispData[]);										// выводит цифры массивом по ячейкам. От 0 до 9 (byte values[] = {3, 5, 9, 0}; )
     void display(uint8_t BitAddr, uint8_t DispData);							// выводит цифру DispData в указанную ячейку дисплея BitAddr
-    void display(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3);	// если лень создавать массив, выводит цифры в ячейки
+    void display(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5);	// если лень создавать массив, выводит цифры в ячейки
     
     void displayByte(uint8_t DispData[]);									// выводит байт вида 0xe6 и буквы-константы вида _a , _b .... массивом
     void displayByte(uint8_t BitAddr, uint8_t DispData);						// выводит байт вида 0xe6 и буквы-константы вида _a , _b .... в ячейку
-    void displayByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3);	// если лень создавать массив, выводит байты в ячейки
+    void displayByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5);	// если лень создавать массив, выводит байты в ячейки
     
-    void displayClock(uint8_t hrs, uint8_t mins);							// выводит часы и минуты
-    void displayClockScroll(uint8_t hrs, uint8_t mins, int delayms);		// выводит часы и минуты с эффектом прокрутки
-    void displayClockTwist(uint8_t hrs, uint8_t mins, int delayms);			// выводит часы и минуты с эффектом скрутки
+    void displayClock(uint8_t hrs, uint8_t mins, uint8_t degs);
+    void displayClockScroll(uint8_t hrs, uint8_t mins, uint8_t degs, int delayms);		// выводит часы и минуты с эффектом прокрутки
+    void displayClockTwist(uint8_t hrs, uint8_t mins, uint8_t degs, int delayms);			// выводит часы и минуты с эффектом скрутки
     
-    void displayInt(int value);												// выводит число от -999 до 9999 (да, со знаком минус)
-    
-    void runningString(uint8_t DispData[], byte amount, int delayMs);  		// бегущая строка (array, sizeof(array), задержка в мс)
-    
+     void displayInt(int value);												// выводит число от -999 до 9999 (да, со знаком минус)
+        
+    void runningString(uint8_t DispData[], byte amount, int delayMs);  
+
+   
     void clear(void);														// очистить дисплей
     
     void point(boolean PointFlag, bool upd = true);											// вкл / выкл точку (POINT_ON / POINT_OFF)
 
     void brightness(uint8_t bright, uint8_t = 0x40, uint8_t = 0xc0);		// яркость 0 - 7	
     
+
     void scroll(uint8_t BitAddr, uint8_t DispData, int delayms);				// обновить значение прокруткой (адрес, ЦИФРА, задержка в мс)
     void scroll(uint8_t DispData[], int delayms);							// обновить значение прокруткой (массив ЦИФР, задержка в мс)
-    void scroll(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, int delayms);	// прокрутка посимвольно
+    void scroll(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5, int delayms);	// прокрутка посимвольно
     void scrollByte(uint8_t BitAddr, uint8_t DispData, int delayms);			// обновить значение прокруткой (адрес, БАЙТ, задержка в мс)
     void scrollByte(uint8_t DispData[], int delayms);						// обновить значение прокруткой (массив БАЙТ, задержка в мс)
-    void scrollByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, int delayms);	// прокрутка посимвольно
+    void scrollByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5, int delayms);	// прокрутка посимвольно
     
     void twist(uint8_t BitAddr, uint8_t DispData, int delayms);				// обновить значение скручиванием (адрес, ЦИФРА, задержка в мс)
     void twist(uint8_t DispData[], int delayms);								// обновить значение скручиванием (массив ЦИФР, задержка в мс)
-    void twist(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, int delayms);	// скрутка посимвольно
+    void twist(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5, int delayms);	// скрутка посимвольно
     void twistByte(uint8_t BitAddr, uint8_t DispData, int delayms);			// обновить значение скручиванием (адрес, БАЙТ, задержка в мс)
     void twistByte(uint8_t DispData[], int delayms);							// обновить значение скручиванием (массив БАЙТ, задержка в мс)
-    void twistByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, int delayms);	// скрутка посимвольно
+    void twistByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5, int delayms);
     
 private:
-    uint8_t lastData[4];
+    uint8_t lastData[6];
     void update();
     int  writeByte(int8_t wr_data);
     void start(void);
