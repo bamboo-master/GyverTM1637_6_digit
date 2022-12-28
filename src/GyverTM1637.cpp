@@ -67,8 +67,8 @@ void GyverTM1637::stop(void)
 // ************************** ФОРМИРУЕМ ДАННЫЕ *****************************
 void GyverTM1637::display(uint8_t DispData[])
 {
-    uint8_t SegData[4];
-    for (byte i = 0; i < 4; i ++) {
+    uint8_t SegData[6];
+    for (byte i = 0; i < 6; i ++) {
         //if (DispData[i] == 0x7f) SegData[i] = 0x00;
         //else 
         //{
@@ -80,8 +80,8 @@ void GyverTM1637::display(uint8_t DispData[])
 }
 void GyverTM1637::displayByte(uint8_t DispData[])
 {
-    uint8_t SegData[4];
-    for (byte i = 0; i < 4; i ++) {
+    uint8_t SegData[6];
+    for (byte i = 0; i < 6; i ++) {
         //if (DispData[i] == 0x7f) SegData[i] = 0x00;
         //else SegData[i] = DispData[i];
         //{
@@ -136,7 +136,7 @@ void GyverTM1637::sendArray(uint8_t sendData[]) {
     stop();           //
     start();          //
     writeByte(Cmd_SetAddr);//
-    for (byte i = 0; i < 4; i ++) {
+    for (byte i = 0; i < 6; i ++) {
         writeByte(sendData[i]);        //
     }
     stop();           //
@@ -145,12 +145,12 @@ void GyverTM1637::sendArray(uint8_t sendData[]) {
     stop();           //
 }
 // ******************************************
-void GyverTM1637::displayByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3) {
-    uint8_t dispArray[] = {bit0, bit1, bit2, bit3};	
+void GyverTM1637::displayByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5) {
+    uint8_t dispArray[] = {bit0, bit1, bit2, bit3, bit4, bit5};	
     displayByte(dispArray);
 }
-void GyverTM1637::display(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3) {
-    uint8_t dispArray[] = {bit0, bit1, bit2, bit3};	
+void GyverTM1637::display(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5) {
+    uint8_t dispArray[] = {bit0, bit1, bit2, bit3, bit4, bit5};	
     display(dispArray);
 }
 
@@ -160,10 +160,14 @@ void GyverTM1637::clear(void)
     display(0x01, 0x7f);
     display(0x02, 0x7f);
     display(0x03, 0x7f);
+    display(0x04, 0x7f);
+    display(0x05, 0x7f);
     lastData[0] = 0x00;
     lastData[1] = 0x00;
     lastData[2] = 0x00;
     lastData[3] = 0x00;
+    lastData[4] = 0x00;
+    lastData[5] = 0x00;
 }
 void GyverTM1637::update(void)
 {
@@ -187,100 +191,55 @@ void GyverTM1637::point(boolean PointFlag, bool upd)
 }
 
 // ************************** ВСЯКИЕ ФУНКЦИИ *****************************
-void GyverTM1637::displayClock(uint8_t hrs, uint8_t mins) {
+void GyverTM1637::displayClock(uint8_t hrs, uint8_t mins, uint8_t degs) {
     if (hrs > 99 || mins > 99) return;
-    uint8_t disp_time[4];	
+    uint8_t disp_time[6];	
     if ((hrs / 10) == 0) disp_time[0] = 10;
     else disp_time[0] = (hrs / 10);
     disp_time[1] = hrs % 10;
     disp_time[2] = mins / 10;
     disp_time[3] = mins % 10;
+    disp_time[4] = degs / 10;
+    disp_time[5] = degs % 10;
     GyverTM1637::display(disp_time);
 }
-void GyverTM1637::displayClockScroll(uint8_t hrs, uint8_t mins, int delayms) {
+
+void GyverTM1637::displayClockScroll(uint8_t hrs, uint8_t mins, uint8_t degs, int delayms) {
     if (hrs > 99 || mins > 99) return;
-    uint8_t disp_time[4];	
+    uint8_t disp_time[6];	
     if ((hrs / 10) == 0) disp_time[0] = 10;
     else disp_time[0] = (hrs / 10);
     disp_time[1] = hrs % 10;
     disp_time[2] = mins / 10;
     disp_time[3] = mins % 10;
+    disp_time[4] = degs / 10;
+    disp_time[5] = degs % 10;
     scroll(disp_time, delayms);
 }
-void GyverTM1637::displayClockTwist(uint8_t hrs, uint8_t mins, int delayms) {
+void GyverTM1637::displayClockTwist(uint8_t hrs, uint8_t mins, uint8_t degs, int delayms) {
     if (hrs > 99 || mins > 99) return;
-    uint8_t disp_time[4];	
+    uint8_t disp_time[6];	
     if ((hrs / 10) == 0) disp_time[0] = 10;
     else disp_time[0] = (hrs / 10);
     disp_time[1] = hrs % 10;
     disp_time[2] = mins / 10;
     disp_time[3] = mins % 10;
+    disp_time[4] = degs / 10;
+    disp_time[5] = degs % 10;
     twist(disp_time, delayms);	
-}
-
-void GyverTM1637::displayInt(int value) {
-    if (value > 9999 || value < -999) return;
-    boolean negative = false;
-    boolean neg_flag = false;
-    byte digits[4];
-    if (value < 0) negative = true;	
-    value = abs(value);	
-    digits[0] = (int)value / 1000;      	// количесто тысяч в числе
-    uint16_t b = (int)digits[0] * 1000; 	// вспомогательная переменная
-    digits[1] = ((int)value - b) / 100; 	// получем количество сотен
-    b += digits[1] * 100;               	// суммируем сотни и тысячи
-    digits[2] = (int)(value - b) / 10;  	// получем десятки
-    b += digits[2] * 10;                	// сумма тысяч, сотен и десятков
-    digits[3] = value - b;              	// получаем количество единиц
-    
-    if (!negative) {
-        for (byte i = 0; i < 3; i++) {
-            if (digits[i] == 0) digits[i] = 10;
-            else break;
-        }
-    } else {
-        for (byte i = 0; i < 3; i++) {
-            if (digits[i] == 0) {
-                if (digits[i + 1] == 0){
-                    digits[i] = 10;
-                } else {
-                    digits[i] = 11;
-                    break;
-                }
-            }			
-        }
-    }
-    GyverTM1637::display(digits);
-}
-
-void GyverTM1637::runningString(uint8_t DispData[], byte amount, int delayMs) {
-    uint8_t segm_data[amount + 8];    // оставляем место для 4х пустых слотов в начале и в конце
-    for (byte i = 0; i < 4; i++) {  // делаем первые 4 символа пустыми
-        segm_data[i] = 0x00;
-    }
-    for (byte i = 0; i < amount; i++) {  // далее забиваем тем что на входе (сам текст строки)
-        segm_data[i + 4] = DispData[i];
-    }
-    for (byte i = amount + 4; i < amount + 8; i++) {  // и последние 4 тоже забиваем пустыми символами
-        segm_data[i] = 0x00;
-    }
-    for (byte i = 0; i <= amount + 4; i++) {   // выводим
-        displayByte(segm_data[i], segm_data[i + 1], segm_data[i + 2], segm_data[i + 3]);
-        delay(delayMs);
-    }
 }
 
 
 void GyverTM1637::scroll(uint8_t DispData[], int delayms) {
-    byte DispDataByte[4];
-    for (byte i = 0; i < 4; i++) {
+    byte DispDataByte[6];
+    for (byte i = 0; i < 6; i++) {
         DispDataByte[i] = digitHEX[DispData[i]];
     }
     scrollByte(DispDataByte, delayms);
 }
 
-void GyverTM1637::scroll(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, int delayms) {
-    byte DispData[] = {digitHEX[bit0], digitHEX[bit1], digitHEX[bit2], digitHEX[bit3]};
+void GyverTM1637::scroll(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5, int delayms) {
+    byte DispData[] = {digitHEX[bit0], digitHEX[bit1], digitHEX[bit2], digitHEX[bit3], digitHEX[bit4], digitHEX[bit5]};
     GyverTM1637::scrollByte(DispData, delayms);
 }
 
@@ -289,23 +248,23 @@ void GyverTM1637::scroll(uint8_t BitAddr, uint8_t DispData, int delayms) {
     scrollByte(BitAddr, DispDataByte, delayms);
 }
 
-void GyverTM1637::scrollByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, int delayms) {
-    byte DispData[] = {bit0, bit1, bit2, bit3};
+void GyverTM1637::scrollByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5, int delayms) {
+    byte DispData[] = {bit0, bit1, bit2, bit3, bit4, bit5};
     GyverTM1637::scrollByte(DispData, delayms);
 }
 
 void GyverTM1637::scrollByte(uint8_t DispData[], int delayms) {
-    byte lastBytes[4];
+    byte lastBytes[6];
     byte step;
-    byte stepArray[4];
-    boolean changeByte[4] = {0, 0, 0, 0};
+    byte stepArray[6];
+    boolean changeByte[6] = {0, 0, 0, 0, 0, 0};
     
-    for (byte i = 0; i < 4; i++) {
+    for (byte i = 0; i < 6; i++) {
         if (DispData[i] != lastData[i]) changeByte[i] = 1;	
         lastBytes[i] = 	lastData[i];	
     }
     
-    for (byte i = 0; i < 4; i++) {
+    for (byte i = 0; i < 6; i++) {
         byte lastByte = lastData[i];
         stepArray[i] = lastByte;		
         
@@ -321,7 +280,7 @@ void GyverTM1637::scrollByte(uint8_t DispData[], int delayms) {
     displayByte(stepArray);
     delay(delayms);
     
-    for (byte i = 0; i < 4; i++) {
+    for (byte i = 0; i < 6; i++) {
         byte lastByte = lastBytes[i];
         stepArray[i] = lastByte;
         
@@ -334,7 +293,7 @@ void GyverTM1637::scrollByte(uint8_t DispData[], int delayms) {
     displayByte(stepArray);
     delay(delayms);
     
-    for (byte i = 0; i < 4; i++) {
+    for (byte i = 0; i < 6; i++) {
         if (changeByte[i]) {
             stepArray[i] = 0;
         }
@@ -342,7 +301,7 @@ void GyverTM1637::scrollByte(uint8_t DispData[], int delayms) {
     displayByte(stepArray);
     delay(delayms);
     
-    for (byte i = 0; i < 4; i++) {
+    for (byte i = 0; i < 6; i++) {
         byte lastByte = lastBytes[i];
         byte newByte = DispData[i];
         stepArray[i] = lastByte;
@@ -356,7 +315,7 @@ void GyverTM1637::scrollByte(uint8_t DispData[], int delayms) {
     displayByte(stepArray);
     delay(delayms);
     
-    for (byte i = 0; i < 4; i++) {
+    for (byte i = 0; i < 6; i++) {
         byte newByte = DispData[i];
         stepArray[i] = lastBytes[i];
         
@@ -372,7 +331,7 @@ void GyverTM1637::scrollByte(uint8_t DispData[], int delayms) {
     displayByte(stepArray);
     delay(delayms);
     
-    for (byte i = 0; i < 4; i++) {
+    for (byte i = 0; i < 6; i++) {
         displayByte(DispData);
     }
 }
@@ -419,29 +378,29 @@ void GyverTM1637::twist(uint8_t BitAddr, uint8_t DispData, int delayms) {
 }
 
 void GyverTM1637::twist(uint8_t DispData[], int delayms) {
-    byte newData[4];
-    for (byte i = 0; i < 4; i++) {
+    byte newData[6];
+    for (byte i = 0; i < 6; i++) {
         newData[i] = digitHEX[DispData[i]];
     }
     twistByte(newData, delayms);
 }
 
-void GyverTM1637::twist(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, int delayms) {
-    byte DispData[] = {digitHEX[bit0], digitHEX[bit1], digitHEX[bit2], digitHEX[bit3]};
+void GyverTM1637::twist(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5, int delayms) {
+    byte DispData[] = {digitHEX[bit0], digitHEX[bit1], digitHEX[bit2], digitHEX[bit3], digitHEX[bit4], digitHEX[bit5]};
     GyverTM1637::twistByte(DispData, delayms);
 }
 
-void GyverTM1637::twistByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, int delayms) {
-    byte DispData[] = {bit0, bit1, bit2, bit3};
+void GyverTM1637::twistByte(uint8_t bit0, uint8_t bit1, uint8_t bit2, uint8_t bit3, uint8_t bit4, uint8_t bit5, int delayms) {
+    byte DispData[] = {bit0, bit1, bit2, bit3, bit4, bit5};
     GyverTM1637::twistByte(DispData, delayms);
 }
 
 void GyverTM1637::twistByte(uint8_t DispData[], int delayms) {
     byte step;
-    byte stepArray[4];
-    boolean changeByte[4] = {0, 0, 0, 0};
+    byte stepArray[6];
+    boolean changeByte[6] = {0, 0, 0, 0, 0, 0};
     
-    for (byte i = 0; i < 4; i++) {
+    for (byte i = 0; i < 6; i++) {
         if (DispData[i] != lastData[i]) changeByte[i] = 1;
         stepArray[i] = DispData[i];
     }	
@@ -533,3 +492,56 @@ void GyverTM1637::twistByte(uint8_t BitAddr, uint8_t DispData, int delayms) {
     }
     displayByte(BitAddr, newByte);
 }
+
+void GyverTM1637::displayInt(int value) {
+    if (value > 9999 || value < -999) return;
+    boolean negative = false;
+    boolean neg_flag = false;
+    byte digits[6];
+    if (value < 0) negative = true;	
+    value = abs(value);	
+    digits[0] = (int)value / 1000;      	// количесто тысяч в числе
+    uint16_t b = (int)digits[0] * 1000; 	// вспомогательная переменная
+    digits[1] = ((int)value - b) / 100; 	// получем количество сотен
+    b += digits[1] * 100;               	// суммируем сотни и тысячи
+    digits[2] = (int)(value - b) / 10;  	// получем десятки
+    b += digits[2] * 10;                	// сумма тысяч, сотен и десятков
+    digits[3] = value - b;              	// получаем количество единиц
+    
+    if (!negative) {
+        for (byte i = 0; i < 3; i++) {
+            if (digits[i] == 0) digits[i] = 10;
+            else break;
+        }
+    } else {
+        for (byte i = 0; i < 3; i++) {
+            if (digits[i] == 0) {
+                if (digits[i + 1] == 0){
+                    digits[i] = 10;
+                } else {
+                    digits[i] = 11;
+                    break;
+                }
+            }			
+        }
+    }
+    GyverTM1637::display(digits);
+}
+
+void GyverTM1637::runningString(uint8_t DispData[], byte amount, int delayMs) {
+    uint8_t segm_data[amount + 8];    // оставляем место для 4х пустых слотов в начале и в конце
+    for (byte i = 0; i < 6; i++) {  // делаем первые 4 символа пустыми
+        segm_data[i] = 0x00;
+    }
+    for (byte i = 0; i < amount; i++) {  // далее забиваем тем что на входе (сам текст строки)
+        segm_data[i + 6] = DispData[i];
+    }
+    for (byte i = amount + 6; i < amount + 8; i++) {  // и последние 4 тоже забиваем пустыми символами
+        segm_data[i] = 0x00;
+    }
+    for (byte i = 0; i <= amount + 6; i++) {   // выводим
+        displayByte(segm_data[i], segm_data[i + 1], segm_data[i + 2], segm_data[i + 3], segm_data[i + 5], segm_data[i + 5]);
+        delay(delayMs);
+    }
+}
+
