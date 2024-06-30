@@ -1,5 +1,5 @@
 /*	
-    GyverTM1637 - бибилотека для 7 сегментного дисплея на чипе TM1637 с кучей приколюх
+    GyverTM1637_6d - бибилотека для 7 сегментного дисплея на чипе TM1637 с кучей приколюх
     Документация: 
     GitHub: https://github.com/GyverLibs/GyverTM1637
     Возможности:
@@ -25,14 +25,14 @@
     v1.4.2 - чуть переделан вывод точки, можно не обновлять
 */
 
-#ifndef _GyverTM1637_h
-#define _GyverTM1637_h
+#ifndef _GyverTM1637_6d_h
+#define _GyverTM1637_6d_h
 #include <inttypes.h>
 #include <Arduino.h>
-class GyverTM1637 {
+class GyverTM1637_6d {
 public:
     
-    GyverTM1637(uint8_t clk, uint8_t dio);									// объявление и инициализация
+    GyverTM1637_6d(uint8_t clk, uint8_t dio);									// объявление и инициализация
     
     void display(uint8_t DispData[]);										// выводит цифры массивом по ячейкам. От 0 до 9 (byte values[] = {3, 5, 9, 0}; )
     void display(uint8_t BitAddr, uint8_t DispData);							// выводит цифру DispData в указанную ячейку дисплея BitAddr
