@@ -8,7 +8,7 @@
 #define DIO 13
 
 #include "GyverTM1637_6d"
-GyverTM1637_6d+6digit disp(CLK, DIO);
+GyverTM1637_6d disp(CLK, DIO);
 
 uint32_t Now, clocktimer;
 boolean flag;
