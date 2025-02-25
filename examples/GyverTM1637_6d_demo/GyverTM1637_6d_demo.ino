@@ -7,7 +7,7 @@
 #define CLK 12
 #define DIO 13
 
-#include "GyverTM1637_6d+6digit.h"
+#include "GyverTM1637_6d"
 GyverTM1637_6d+6digit disp(CLK, DIO);
 
 uint32_t Now, clocktimer;
